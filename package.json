@@ -7,7 +7,7 @@
 		"name": "Dmitri Tabanin",
 		"email": "ermouth@gmail.com"
 	},
-	"keywords":[
+	"keywords": [
 		"couchdb",
 		"acl",
 		"nosql",
@@ -26,21 +26,20 @@
 	"dependencies": {
 		"sugar": "~1.4.1",
 		"memory-rate": ">=0.0.7",
-		"basic-auth": "^1.0.0",
-		"event-stream": "3.2.x",
+		"basic-auth": "^2.0",
+		"event-stream": "3.3",
 		"q": ">=1.1.0",
-		"cookie-parser": "^1.3.0",
-		"compression": "^1.3.0",
-		"body-parser": "^1.10.0",
-		"request": "^2.51.0",
-		"express": "^4.10.0",
-		"nano":	"^6.0.2"
+		"cookie-parser": "^1.4",
+		"compression": "^1.7",
+		"body-parser": "^1.18",
+		"request": "^2.85",
+		"express": "^4.16",
+		"nano": "^6.4"
 	},
-	"files":[
+	"files": [
 		"covercouch.js",
 		"README.md",
 		"cvr/"
 	],
-	"license":"MIT"
+	"license": "MIT"
 }
-
