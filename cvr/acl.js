@@ -174,7 +174,7 @@ module.exports = function (cvr) {
 				op = action||"_r",
 				r = [];
 			rows.forEach(function(e){
-				if (_getAcl(u, dbv, e.id)[op]) r.push(e);
+				if (_getAcl(u, dbv, e[preserveDenied === 0 ? '_id' : 'id'])[op]) r.push(e);
 				else if (preserveDenied) r.push({id: e.id, error:"not_found"})
 			});
 			return r;

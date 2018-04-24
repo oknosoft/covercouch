@@ -14,111 +14,113 @@ module.exports = function (cvr) {
     var routes = {},
         map = {
     get: {
-        '/':                'pipe',
-        '/_session':        'session',
-        '/_active_tasks':   'admin',
-        '/_all_dbs':        'dblist',
-        '/_db_updates':     'admin',
-        '/_log':            'admin',
-        '/_stats':          'admin',
-        '/_stats/*':        'admin',
-        '/_config':         'admin',
-        '/_config/*':       'admin',
-        '/_utils':          'admin',
-        '/_utils/*':        'admin',
-        '/_uuids':          'pipe',
+      '/':                'pipe',
+      '/_session':        'session',
+      '/_active_tasks':   'admin',
+      '/_all_dbs':        'dblist',
+      '/_db_updates':     'admin',
+      '/_log':            'admin',
+      '/_stats':          'admin',
+      '/_stats/*':        'admin',
+      '/_config':         'admin',
+      '/_config/*':       'admin',
+      '/_utils':          'admin',
+      '/_utils/*':        'admin',
+      '/_uuids':          'pipe',
 
-        '/db': {
-            '':             'db,pipe',
-            '/_all_docs':   'db,rows',
-            '/_changes':    'db,changes',
-            '/_security':   'admin',
-            '/_revs_limit': 'admin',
-            '/id':          'db,doc,pipe',
+      '/db': {
+        '':             'db,pipe',
+        '/_all_docs':   'db,rows',
+        '/_changes':    'db,changes',
+        '/_security':   'admin',
+        '/_revs_limit': 'admin',
+        '/id':          'db,doc,pipe',
 
-            '/_design/id':          'db,doc,pipe',
-            '/_design/id/fname':    'db,doc,pipe',
-            '/_local/id':           'db,pipe',
-            '/id/fname':            'db,doc,pipe',
+        '/_design/id':          'db,doc,pipe',
+        '/_design/id/fname':    'db,doc,pipe',
+        '/_local/id':           'db,pipe',
+        '/id/fname':            'db,doc,pipe',
 
-            '/_design/ddoc': {
-                '/_info':       'admin',
+        '/_design/ddoc': {
+          '/_info':       'admin',
 
-                '/_view/view': 'db,rows',
-                '/_show/show': 'pipe',
-                '/_rewrite/p': 'admin',
+          '/_view/view': 'db,rows',
+          '/_show/show': 'pipe',
+          '/_rewrite/p': 'admin',
 
-                '/_list/list/view':     'db,dbinfo,list',
-                '/_show/show/id':       'db,doc,pipe',
+          '/_list/list/view':     'db,dbinfo,list',
+          '/_show/show/id':       'db,doc,pipe',
 
-                '/_list/list/ddoc2/view':   'db,dbinfo,list'
-            }
+          '/_list/list/ddoc2/view':   'db,dbinfo,list'
         }
+      }
     },
     post: {
-        '/_session':    'body,auth',
-        '/_replicate':  'admin',
-        '/_restart':    'admin',
-        '/db': {
-            '':         'db,body,doc,pipe',
-            '/_all_docs':       'db,body,rows',
-            '/_bulk_docs':      'db,body,bulk',
-            '/_changes':        'db,changes',
-            '/_compact':        'admin',
-            '/_compact/*':      'admin',
-            '/_view_cleanup':   'admin',
-            '/_temp_view':      'admin',
-            '/_purge':          'admin',
-            '/_missing_revs':   'db,body,revs',
-            '/_revs_diff':      'db,body,revs',
-            '/_ensure_full_commit':     'admin',
+      '/_session':    'body,auth',
+      '/_replicate':  'admin',
+      '/_restart':    'admin',
+      '/db': {
+        '':               'db,body,doc,pipe',
+        '/_all_docs':     'db,body,rows',
+        '/_find':         'db,body,rows',
+        '/_bulk_docs':    'db,body,bulk',
+        '/_changes':      'db,changes',
+        '/_compact':      'admin',
+        '/_compact/*':    'admin',
+        '/_view_cleanup': 'admin',
+        '/_temp_view':    'admin',
+        '/_purge':        'admin',
+        '/_missing_revs': 'db,body,revs',
+        '/_revs_diff':    'db,body,revs',
+        '/_ensure_full_commit':     'admin',
 
-            '/_design/ddoc': {
-                '/_view/view':  'db,body,rows',
-                '/_show/show':  'db,pipe',
-                '/_update/update':      'db,pipe',
+        '/_design/ddoc': {
+          '/_view/view':  'db,body,rows',
+          '/_show/show':  'db,pipe',
+          '/_update/update':      'db,pipe',
 
-                '/_list/list/view':     'db,body,dbinfo,list',
-                '/_show/show/id':       'db,body,doc,pipe',
-                '/_update/update/id':   'db,body,doc,pipe',			// Update checks R, not W permissions!
+          '/_list/list/view':     'db,body,dbinfo,list',
+          '/_show/show/id':       'db,body,doc,pipe',
+          '/_update/update/id':   'db,body,doc,pipe',			// Update checks R, not W permissions!
 
-                '/_list/list/ddoc2/view':   'db,body,dbinfo,list'
-            }
+          '/_list/list/ddoc2/view':   'db,body,dbinfo,list'
         }
+      }
     },
     put: {
-        '/db': {
-            '':             'admin',
-            '/_security':   'admin',
-            '/_revs_limit': 'admin',
-            '/id':          'db,doc,pipe',
-            '/_design/id':  'db,doc,pipe',
-            '/_design/id/fname':    'db,doc,pipe',
-            '/_local/id':   'db,pipe',
-            '/id/fname':    'db,doc,pipe',
-            '/_design/ddoc/_update/update/id':  'db,doc,pipe'
-        }
+      '/db': {
+        '':             'admin',
+        '/_security':   'admin',
+        '/_revs_limit': 'admin',
+        '/id':          'db,doc,pipe',
+        '/_design/id':  'db,doc,pipe',
+        '/_design/id/fname':    'db,doc,pipe',
+        '/_local/id':   'db,pipe',
+        '/id/fname':    'db,doc,pipe',
+        '/_design/ddoc/_update/update/id':  'db,doc,pipe'
+      }
     },
     head: {
-        '/db': {
-            '':             'db,pipe',
-            '/id':          'db,doc,pipe',
-            '/_design/id':  'db,pipe',
-            '/id/fname':    'db,doc,pipe',
-            '/_design/id/fname': 'db,pipe'
-        }
+      '/db': {
+        '':             'db,pipe',
+        '/id':          'db,doc,pipe',
+        '/_design/id':  'db,pipe',
+        '/id/fname':    'db,doc,pipe',
+        '/_design/id/fname': 'db,pipe'
+      }
     },
     delete: {
-        '/_session':        'session',
-        '/db': {
-            '':             'admin',
-            '/id':          'db,doc,pipe',
-            '/_design/id':  'db,doc,pipe',
-            '/_design/id/fname': 'db,doc,pipe',
-            '/_local/id':   'db,pipe',
-            '/id/fname':    'db,doc,pipe'
-        }
-    }}
+      '/_session':        'session',
+      '/db': {
+        '':             'admin',
+        '/id':          'db,doc,pipe',
+        '/_design/id':  'db,doc,pipe',
+        '/_design/id/fname': 'db,doc,pipe',
+        '/_local/id':   'db,pipe',
+        '/id/fname':    'db,doc,pipe'
+      }
+    }
+    }
     // -- end of request actors map
 
     var go = function (r, key, obj) {

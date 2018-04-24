@@ -90,15 +90,20 @@ module.exports = function (R, cvr) {
 
                 var q = req.query || {};
                 if (m === "GET" || m === "POST") {
+                  if(req.route.path === '/:db/_find') {
+                    req.isLong = false;
+                  }
+                  else {
                     req.isLong = !(
                         (req.body && req.body.keys)
                         ||
                         (q.startkey !== undefined && q.endkey !== undefined )
                         ||
                         q.key !== undefined
-                        )
-                        ||
-                        (q.include_docs !== undefined && q.attachments !== undefined );
+                      )
+                      ||
+                      (q.include_docs !== undefined && q.attachments !== undefined );
+                  }
                 }
                 next();
             }
@@ -618,6 +623,20 @@ module.exports = function (R, cvr) {
                             );
                             _send(req, res, [data[0], r]);
                             d = r = null;
+                        }
+                        else if (d && d.docs) {
+                          r = {
+                            bookmark: d.bookmark,
+                            docs: cvr.ACL.rows(
+                              req.session,
+                              db,
+                              d.docs,
+                              '_r',
+                              0
+                            )
+                          };
+                          _send(req, res, [data[0], r]);
+                          d = r = null;
                         }
                         else _send(req, res, data);
                     });
