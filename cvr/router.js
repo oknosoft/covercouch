@@ -514,6 +514,46 @@ module.exports = function (R, cvr) {
             }
         },
 
+        mango: function (req, res) {
+
+          if(!req.body.fields) {
+            req.body.fields = ['_id'];
+          }
+          else if(req.body.fields.indexOf('_id') === -1) {
+            req.body.fields.push('_id');
+          }
+
+          var db = req.params.db,
+            dbv = cvr.db[db],
+            path = req.params,
+            jsopts, opts,
+            rows=[],
+            p = _gen(req, {}, true);
+
+          cvr.Request(p).done(function (data) {
+            var d, r;
+            try {
+              d = isS(data[1]) ? JSON.parse(data[1]) : data[1];
+            } catch (e) {
+            }
+            if (d && d.docs) {
+              r = {
+                bookmark: d.bookmark,
+                docs: cvr.ACL.rows(
+                  req.session,
+                  db,
+                  d.docs,
+                  '_r',
+                  0
+                )
+              };
+              _send(req, res, [data[0], r]);
+              d = r = null;
+            }
+            else _send(req, res, data);
+          });
+
+        },
 
         rows: function (req, res) {
             // Get and acl-filter rows
@@ -623,20 +663,6 @@ module.exports = function (R, cvr) {
                             );
                             _send(req, res, [data[0], r]);
                             d = r = null;
-                        }
-                        else if (d && d.docs) {
-                          r = {
-                            bookmark: d.bookmark,
-                            docs: cvr.ACL.rows(
-                              req.session,
-                              db,
-                              d.docs,
-                              '_r',
-                              0
-                            )
-                          };
-                          _send(req, res, [data[0], r]);
-                          d = r = null;
                         }
                         else _send(req, res, data);
                     });

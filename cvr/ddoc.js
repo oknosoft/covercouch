@@ -38,23 +38,33 @@ module.exports = function () {
 
                     // Map fn that generates ACL index
 
-                    var r = {
-                            s: doc._local_seq,
-                            p: "",
-                            _r: {},
-                            _w: {},
-                            _d: {}
-                        },
-                        tmp = "", i, ctr = 0,
-                        cr = doc.creator, acl = doc.acl, ow = doc.owners,
-                        S = "string", O = "object", F = "function",
-                        rr = /^r-/, ru = /^u-/;
+                  var r = {
+                      s: doc._local_seq,
+                      p: '',
+                      _r: {},
+                      _w: {},
+                      _d: {}
+                    },
+                      tmp = "", i, ctr = 0,
+                      cr = doc.creator,
+                      acl = doc.acl,
+                      ow = doc.owners,
+                      pr = doc.partner,
+                      S = "string", O = "object", F = "function",
+                      rr = /^r-/, ru = /^u-/;
 
                     if (typeof cr == S && cr) {
-                        tmp = cr;
-                        if (!ru.test(tmp)) tmp = 'u-' + tmp;
-                        r._r[tmp] = r._w[tmp] = r._d[tmp] = 1;
-                        ctr += 1;
+                      tmp = cr;
+                      if (!ru.test(tmp)) tmp = 'u-' + tmp;
+                      r._r[tmp] = r._w[tmp] = r._d[tmp] = 1;
+                      ctr += 1;
+                    }
+
+                    // разрешения по контрагенту
+                    if (typeof pr == S && pr && pr !== "00000000-0000-0000-0000-000000000000") {
+                      tmp = 'r-' + pr;
+                      r._r[tmp] = r._w[tmp] = 1;
+                      ctr += 1;
                     }
 
                     if (acl != null && typeof acl == O && typeof acl.slice == F) {
