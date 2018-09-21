@@ -102,7 +102,7 @@ module.exports = function () {
             }
         },
         validate_doc_update: function (nd, od, userCtx, secObj) {
-            var adm = !!( userCtx.roles.indexOf("_admin") >= 0 ),
+          var adm = !!(userCtx.roles.indexOf('_admin') !== -1 || userCtx.roles.indexOf('doc_full') !== -1),
                 u = userCtx.name,
                 uu = 'u-' + u,
                 O = 'object',

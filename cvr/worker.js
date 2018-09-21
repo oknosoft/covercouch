@@ -278,7 +278,7 @@ module.exports = function (runtime) {
     function _stashUsers(rows) {
         rows.forEach(function (obj) {
             var e = obj.doc;
-            if (/^org\.couchdb\.user:[a-z0-9_]+$/.test(e._id) && e.type == "user") {
+            if (/^org\.couchdb\.user:/.test(e._id) && e.type == "user") {
                 var u = Object.clone(e, true);
                 if (u.password === null) {
                     u.admin = true;
@@ -298,19 +298,32 @@ module.exports = function (runtime) {
 
     function _stashDbs(data) {
         var i, tmp, pre = {}, dbs = data[0], all = [], pi = Q.defer();
-        dbs.forEach(function (e) {
-            cvr.db[e] = _newDb(e);
-        });
+        // dbs.forEach(function (e) {
+        //   if(e.indexOf('$') === -1) {
+        //     cvr.db[e] = _newDb(e);
+        //   }
+        // });
 
         for (i = 0; i < conf.couch.preload.length; i++) {
-            tmp = conf.couch.preload[i];
-            pre[tmp] = true;
-            if (cvr.db[tmp]) all.push(_cacheDb(tmp, true));
+          tmp = conf.couch.preload[i];
+          pre[tmp] = true;
+          cvr.db[tmp] = _newDb(tmp);
+          if (cvr.db[tmp]) all.push(_cacheDb(tmp, true));
         }
 
-        dbs.forEach(function (e) {
-            if (!pre[e]) all.push(_cacheDbDdocs(e));
-        });
+        // dbs.forEach(function (e) {
+        //     if (!pre[e] && cvr.db[e]) all.push(_cacheDbDdocs(e));
+        // });
+
+      // all.reduce((sum, cache) => {
+      //   return sum.then(() => {
+      //     return cache;
+      //   });
+      // }, Promise.resolve())
+      //   .then(() => {
+      //     log(all.length + " DBs precached");
+      //     pi.resolve();
+      //   });
 
         Q.all(all).done(function (data) {
             log(data.length + " DBs precached");

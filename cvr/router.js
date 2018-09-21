@@ -772,10 +772,19 @@ module.exports = function (R, cvr) {
     //----------------------------
 
     function _fail(req, res, obj, code) {
+
+      if(obj && obj.reason === 'no_db_file'){
+        cvr.Request(_gen(req)).done(function (data) {
+          // We do not memoize session now
+          _send(req, res, data);
+        });
+      }
+      else {
         _sendRaw(req, res, obj || {
-            error: "forbidden",
-            reason: "Access denied."
+          error: "forbidden",
+          reason: "Access denied."
         }, code || 403);
+      }
     }
 
     //----------------------------
