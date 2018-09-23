@@ -3,7 +3,6 @@
  * Created by ermouth on 18.01.15.
  */
 
-
 module.exports = function (R, cvr) {
 
     var i,
@@ -40,7 +39,7 @@ module.exports = function (R, cvr) {
             if (!db) next();
             else {
                 if (dbv = cvr.db[db]) {
-                    if (!cvr.db[db].cached) cvr.Couch.cacheDb(db).then(_check);
+                    if (!dbv.cached) cvr.Couch.cacheDb(db).then(_check);
                     else _check();
                 }
                 else _fail(req, res, {error: "not_found", reason: "no_db_file"}, 404);
@@ -774,10 +773,14 @@ module.exports = function (R, cvr) {
     function _fail(req, res, obj, code) {
 
       if(obj && obj.reason === 'no_db_file'){
-        cvr.Request(_gen(req)).done(function (data) {
-          // We do not memoize session now
-          _send(req, res, data);
-        });
+        req
+          .pipe(cvr.request(_gen(req)))
+          .pipe(res);
+
+        // cvr.Request(_gen(req)).done(function (data) {
+        //   // We do not memoize session now
+        //   _send(req, res, data);
+        // });
       }
       else {
         _sendRaw(req, res, obj || {

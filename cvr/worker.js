@@ -298,22 +298,21 @@ module.exports = function (runtime) {
 
     function _stashDbs(data) {
         var i, tmp, pre = {}, dbs = data[0], all = [], pi = Q.defer();
-        // dbs.forEach(function (e) {
-        //   if(e.indexOf('$') === -1) {
-        //     cvr.db[e] = _newDb(e);
-        //   }
-        // });
+        dbs.forEach(function (e) {
+          if(e.indexOf('$') === -1 && ['sl_users', 'fl_0_ram'].indexOf(e) === -1) {
+            cvr.db[e] = _newDb(e);
+          }
+        });
 
         for (i = 0; i < conf.couch.preload.length; i++) {
           tmp = conf.couch.preload[i];
           pre[tmp] = true;
-          cvr.db[tmp] = _newDb(tmp);
           if (cvr.db[tmp]) all.push(_cacheDb(tmp, true));
         }
 
-        // dbs.forEach(function (e) {
-        //     if (!pre[e] && cvr.db[e]) all.push(_cacheDbDdocs(e));
-        // });
+        dbs.forEach(function (e) {
+            if (!pre[e] && cvr.db[e]) all.push(_cacheDbDdocs(e));
+        });
 
       // all.reduce((sum, cache) => {
       //   return sum.then(() => {
@@ -362,7 +361,12 @@ module.exports = function (runtime) {
             endkey:ddockey || "_design0"
         })
         .then(function (all) {
-            if (all[0].rows.length)  _unwindDdocs(dbv, all[0].rows);
+            if (all[0].rows.length) {
+              _unwindDdocs(dbv, all[0].rows);
+            }
+            else {
+              dbv.noacl = true;
+            }
 
             if (dbv.ddoc['_design/acl']) log('Found _design/acl for ' + db);
 
