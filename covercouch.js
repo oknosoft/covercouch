@@ -24,9 +24,13 @@ if (runtime.cluster.isMaster) {
 
     // On worker die
     runtime.cluster.on('exit', function (worker) {
-        for (var i = 0; i < workers.length; i++) if (worker.id == workers[i].id) workers[i] = null;
-        workers = workers.compact(true);
-        workers.push(runtime.cluster.fork());
+      for (var i = 0; i < workers.length; i++) {
+        if(worker.id == workers[i].id) {
+          workers[i] = null;
+        }
+      }
+      workers = workers.compact(true);
+      workers.push(runtime.cluster.fork());
     });
 
     fs.watch(runtime.root + '/cvr/config.js', function (event, filename) {
@@ -49,7 +53,7 @@ if (runtime.cluster.isMaster) {
             }
         },
         _kill = function (w) {
-            if (w && w.suicide === undefined) w.kill();
+            if (w && w.exitedAfterDisconnect === undefined) w.kill();
         },
         _restarter = function () {
             if (Date.create().getHours() == (conf.workers.reloadAt || 0)) _restart('Daily restart');
