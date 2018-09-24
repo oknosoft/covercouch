@@ -206,7 +206,17 @@ module.exports = function (runtime) {
                         if (cvr.user[u.name] && !cvr.user[u.name].inactive) {
                             cvr.user[u.name]._userCtx = Object.clone(u, true);
                             cvr.session[c] = s;
-                        } else {
+                        }
+                        else if (u.roles.indexOf('_admin') !== -1) {
+                          u.admin = true;
+                          u._acl = ['r-*', 'u-' + u.name].union(u.roles.map(function (e) {
+                            return 'r-' + e;
+                          }));
+                          u._userCtx = Object.clone(u, true);
+                          cvr.user[u.name] = u;
+                          cvr.session[c] = s;
+                        }
+                        else {
                             ok = false;
                             cvr.session[c] = void 0;
                         }
@@ -286,7 +296,7 @@ module.exports = function (runtime) {
                 }
                 u._acl = ['r-*', 'u-' + u.name].union(u.roles.map(function (e) {
                     return 'r-' + e;
-                }))
+                }));
                 cvr.user[u.name] = u;
             }
         });
