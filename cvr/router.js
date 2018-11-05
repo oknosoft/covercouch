@@ -25,6 +25,15 @@ module.exports = function (R, cvr) {
 
         // ====== Prechecks, parsers and early guards ======
 
+        body: function (req, res, next) {
+          // bodyParser
+          try {
+            cvr.bodyParser({limit: conf.server.maxpost})(req, res, next);
+          } catch (e) {
+            _fail(req, res, {error: "bad_request", reason: 'Invalid format.'}, 400);
+          }
+        },
+
         db: function (req, res, next) {
 
             // Checks if principal has permissions
@@ -146,15 +155,6 @@ module.exports = function (R, cvr) {
                     error: m != '_r' ? "forbidden" : "not_found",
                     reason: "ACL"
                 }, m != '_r' ? 403 : 404);
-            }
-        },
-
-        body: function (req, res, next) {
-            // bodyParser
-            try {
-                cvr.bodyParser({limit: conf.server.maxpost})(req, res, next);
-            } catch (e) {
-                _fail(req, res, {error: "bad_request", reason: 'Invalid format.'}, 400);
             }
         },
 
@@ -728,9 +728,9 @@ module.exports = function (R, cvr) {
         var i, tmp, jsopts = {}, obj = obj0||{};
         for (i in obj) {
             tmp = void 0;
-            if (/^(start\-?key|end\-?key|key)$/.test(i)) {
+            if (/^(start\-?key|end\-?key|key|keys)$/.test(i)) {
                 try {
-                    tmp = JSON.parse(req.query[i]);
+                    tmp = JSON.parse(obj[i]);
                 } catch (e) {}
                 if (tmp!==void 0) jsopts[i] = tmp;
             }

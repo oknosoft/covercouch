@@ -48,6 +48,7 @@ module.exports = function (runtime) {
             log: log,
             ddoc: require('./ddoc')(),
             config: conf,
+            bodyParser: bodyParser,
             db: {},
             user: {
                 _anonymous: {
@@ -56,7 +57,6 @@ module.exports = function (runtime) {
                 }
             },
             session: {},
-            bodyParser: bodyParser,
             nano:nano,
 
             Q: Q,
@@ -98,7 +98,7 @@ module.exports = function (runtime) {
             // CORS and other headers,
             // unjsonned query
             res.set(conf.headers);
-            if (conf.origins && conf.origins[req.headers.origin]) {
+            if (conf.origins && (conf.origins[req.headers.origin] || !Object.keys(conf.origins).length)) {
                 res.set('Access-Control-Allow-Origin', req.headers.origin);
             }
             next();

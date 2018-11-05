@@ -60,30 +60,30 @@ module.exports = function (cvr) {
       '/_replicate':  'admin',
       '/_restart':    'admin',
       '/db': {
-        '':               'db,body,doc,pipe',
-        '/_all_docs':     'db,body,rows',
-        '/_find':         'db,body,mango',
-        '/_bulk_docs':    'db,body,bulk',
+        '':               'body,db,doc,pipe',
+        '/_all_docs':     'body,db,rows',
+        '/_find':         'body,db,mango',
+        '/_bulk_docs':    'body,db,bulk',
         '/_changes':      'db,changes',
         '/_compact':      'admin',
         '/_compact/*':    'admin',
         '/_view_cleanup': 'admin',
         '/_temp_view':    'admin',
         '/_purge':        'admin',
-        '/_missing_revs': 'db,body,revs',
-        '/_revs_diff':    'db,body,revs',
+        '/_missing_revs': 'body,db,revs',
+        '/_revs_diff':    'body,db,revs',
         '/_ensure_full_commit':     'admin',
 
         '/_design/ddoc': {
-          '/_view/view':  'db,body,rows',
+          '/_view/view':  'body,db,rows',
           '/_show/show':  'db,pipe',
           '/_update/update':      'db,pipe',
 
-          '/_list/list/view':     'db,body,dbinfo,list',
-          '/_show/show/id':       'db,body,doc,pipe',
-          '/_update/update/id':   'db,body,doc,pipe',			// Update checks R, not W permissions!
+          '/_list/list/view':     'body,db,dbinfo,list',
+          '/_show/show/id':       'body,db,doc,pipe',
+          '/_update/update/id':   'body,db,doc,pipe',			// Update checks R, not W permissions!
 
-          '/_list/list/ddoc2/view':   'db,body,dbinfo,list'
+          '/_list/list/ddoc2/view':   'body,db,dbinfo,list'
         }
       }
     },
