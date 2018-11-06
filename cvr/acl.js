@@ -147,7 +147,7 @@ module.exports = function (cvr) {
 			var u = cvr.user[session.user],
 				dbv = cvr.db[db];
 			if (!dbv) return false;
-			if (dbv.isforall && dbv.noacl && !dbv.restricted) return 2;
+			if (dbv.isforall && (dbv.noacl || dbv.name === 'fl_0_remote') && !dbv.restricted) return 2;
 			else {
 				if (!dbv.isforall) {
 					// we have _design/acl.restrict.* general access rule

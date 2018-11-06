@@ -3,7 +3,7 @@
  * Created by ermouth on 18.01.15.
  */
 
-module.exports = function (R, cvr) {
+module.exports = function (R, cvr, _newDb) {
 
     var i,
         es = cvr.Estream,
@@ -45,13 +45,24 @@ module.exports = function (R, cvr) {
                 u = cvr.user[req.session.user],
                 m = req.method,
                 dbv;
-            if (!db) next();
+            if(!db) {
+              next();
+            }
             else {
-                if (dbv = cvr.db[db]) {
-                    if (!dbv.cached) cvr.Couch.cacheDb(db).then(_check);
-                    else _check();
+              if(!cvr.db[db]) {
+                cvr.db[db] = _newDb(db);
+              }
+              if(dbv = cvr.db[db]) {
+                if(!dbv.cached) {
+                  cvr.Couch.cacheDb(db).then(_check);
                 }
-                else _fail(req, res, {error: "not_found", reason: "no_db_file"}, 404);
+                else {
+                  _check();
+                }
+              }
+              else {
+                _fail(req, res, {error: 'not_found', reason: 'no_db_file'}, 404);
+              }
             }
             return;
 
@@ -62,9 +73,15 @@ module.exports = function (R, cvr) {
                 //Can user see this bucket?
 
                 var ok = cvr.ACL.db(req.session, db);
-                if (ok == 2) actors.pipe(req, res);
-                else if (ok == 1) _restrict();
-                else _fail(req, res, {error: "not_found", reason: "ACL"}, 404);
+              if(ok == 2) {
+                actors.pipe(req, res);
+              }
+              else if(ok == 1) {
+                _restrict();
+              }
+              else {
+                _fail(req, res, {error: "not_found", reason: "ACL"}, 404);
+              }
             }
 
             function _restrict() {

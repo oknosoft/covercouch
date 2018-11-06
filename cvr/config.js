@@ -43,15 +43,15 @@ module.exports = function (runtime) {
 
     // CORS headers
     headers: {
-      // "Access-Control-Allow-Credentials": true,
-      // "Access-Control-Expose-Headers": "Content-Type, Server",
-      // "Access-Control-Allow-Headers": "Content-Type, Server, Authorization",
-      // "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS,HEAD",
-      // "Access-Control-Max-Age": "86400",
+      "Access-Control-Allow-Credentials": true,
+      "Access-Control-Expose-Headers": "Content-Type, Server",
+      "Access-Control-Allow-Headers": "Content-Type, Server, Authorization",
+      "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS,HEAD",
+      "Access-Control-Max-Age": "86400",
       "X-Powered-By": "CoverCouch 0.1.0"
     },
 
     // CORS domains, like "http://xxx.xxx": true
-    origins: {}
+    origins: {"http://localhost:3003": true}
   }
 }
