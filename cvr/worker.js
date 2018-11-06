@@ -87,12 +87,17 @@ module.exports = function (runtime) {
         require('compression')({ threshold: 4096 }),
         cookieParser(),
         function (req, res, next) {
-            // Identify user
-            req.basicAuth = basicAuth(req);
-            _userBySession(req)
+            if(req.method === 'OPTIONS'){
+              next();
+            }
+            else {
+              // Identify user
+              req.basicAuth = basicAuth(req);
+              _userBySession(req)
                 .done(function () {
-                    next();
+                  next();
                 });
+            }
         },
         function (req, res, next) {
             // CORS and other headers,
@@ -190,10 +195,15 @@ module.exports = function (runtime) {
                     Accept: 'application/json'
                 }
             };
-            if (req.basicAuth)  h.headers.Authorization = "Basic " + sid;
-            else h.headers.Cookie = 'AuthSession=' + (cookie || "");
+          if(req.basicAuth) {
+            h.headers.Authorization = 'Basic ' + sid;
+          }
+          else if(cookie){
+            h.headers.Cookie = 'AuthSession=' + cookie;
+          }
 
-            cvr.Request(Object.merge(p, h, true)).done(function (data) {
+          cvr.Request(Object.merge(p, h, true))
+              .done(function (data) {
                 var ok = true,
                     d = JSON.parse(data[1]),
                     u, c, s;
@@ -270,9 +280,13 @@ module.exports = function (runtime) {
             var feed = udb.follow({since: "now", include_docs: true});
             feed.on('change', function (a) {
                 var id = a.id, u = a.doc;
-                if (/^org\.couchdb\.user:[a-z0-9_]+$/.test(id)) {
-                    if (a.deleted) delete cvr.user[u.name];
-                    else _stashUsers([a])
+                if (/^org\.couchdb\.user:[A-Za-z0-9_]+$/.test(id)) {
+                  if(a.deleted) {
+                    delete cvr.user[id.replace(/^org\.couchdb\.user:/, '')];
+                  }
+                  else {
+                    _stashUsers([a]);
+                  }
                 }
             });
             feed.follow();
@@ -294,9 +308,8 @@ module.exports = function (runtime) {
                     u.admin = true;
                     u.roles = u.roles.union('_admin');
                 }
-                u._acl = ['r-*', 'u-' + u.name].union(u.roles.map(function (e) {
-                    return 'r-' + e;
-                }));
+                u._acl = ['r-*', 'u-' + u.name]
+                  .union(u.roles.filter((e) => !/^user:/.test(e)).map((e) => 'r-' + e));
                 cvr.user[u.name] = u;
             }
         });
