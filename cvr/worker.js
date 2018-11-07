@@ -102,11 +102,11 @@ module.exports = function (runtime) {
         function (req, res, next) {
             // CORS and other headers,
             // unjsonned query
-            res.set(conf.headers);
-            if (conf.origins && conf.origins[req.headers.origin]) {
-                res.set('Access-Control-Allow-Origin', req.headers.origin);
-            }
-            next();
+          res.set(conf.headers);
+          if (conf.origins && conf.origins[req.headers.origin]) {
+            res.set('Access-Control-Allow-Origin', req.headers.origin);
+          }
+          next();
         },
         require('./router')(router, cvr, _newDb)
     ])

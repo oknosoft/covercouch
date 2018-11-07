@@ -74,6 +74,7 @@ module.exports = function (R, cvr, _newDb) {
 
                 var ok = cvr.ACL.db(req.session, db);
               if(ok == 2) {
+                //req.route.path === '/:db/_changes' ? next() : actors.pipe(req, res);
                 actors.pipe(req, res);
               }
               else if(ok == 1) {
@@ -324,20 +325,22 @@ module.exports = function (R, cvr, _newDb) {
 
 
         pipe: function (req, res) {
-            // Pipes request through
-            var p = {
-                url: couch + req.url,
-                headers: req.h
-            };
-            //If we have no body parsed, pipe request
-            if (!req.body) req.pipe(cvr.request(p)).pipe(res);
-            else {
-                // Make request and send result
-                p = _gen(req, {});
-                cvr.Request(p).done(function (data) {
-                    _send(req, res, data);
-                });
-            }
+          // Pipes request through
+          var p = {
+            url: couch + req.url,
+            headers: req.h
+          };
+          //If we have no body parsed, pipe request
+          if(!req.body || req.route.path === '/:db/_changes') {
+            req.pipe(cvr.request(p)).pipe(res);
+          }
+          else {
+            // Make request and send result
+            p = _gen(req);
+            cvr.Request(p).done(function (data) {
+              _send(req, res, data);
+            });
+          }
         },
 
 
