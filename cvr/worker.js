@@ -252,14 +252,14 @@ module.exports = function (runtime) {
         return pi.promise;
 
         function _h() {
-            req.h = Object.merge(
-                Object.clone(
-                    Object.reject(req.headers, ["Authorization", "Cookie", 'accept-encoding', 'content-length']),
-                    true
-                ),
-                req.session.h,
-                true
-            );
+          req.h = Object.merge(
+            Object.clone(
+              Object.reject(req.headers, ['Authorization', 'Cookie', 'accept-encoding', 'content-length']),
+              true
+            ),
+            req.session.h,
+            true
+          );
         }
     }
 
