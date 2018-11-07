@@ -278,11 +278,11 @@ module.exports = function (runtime) {
 
             // Follow _users db
             var feed = udb.follow({since: "now", include_docs: true});
-            feed.on('change', function (a) {
-                var id = a.id, u = a.doc;
-                if (/^org\.couchdb\.user:[A-Za-z0-9_]+$/.test(id)) {
+            feed.on('change', (a) => {
+                const regex = /^org\.couchdb\.user:/;
+                if (regex.test(a.id)) {
                   if(a.deleted) {
-                    delete cvr.user[id.replace(/^org\.couchdb\.user:/, '')];
+                    delete cvr.user[a.id.replace(regex, '')];
                   }
                   else {
                     _stashUsers([a]);
