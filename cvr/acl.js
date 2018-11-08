@@ -32,7 +32,8 @@ module.exports = function (cvr) {
 			// check doc...
 			var dacl = dbv.acl[id];
 			if (dacl) {
-				acl._r = acl._w = acl._d = false;
+				acl._r = dacl._r.hasOwnProperty('u-_anonymous');
+				acl._w = acl._d = false;
 				u._acl.forEach(_setAcl);
 
 				// ...and parent
@@ -146,18 +147,25 @@ module.exports = function (cvr) {
 			var u = cvr.user[session.user],
 				dbv = cvr.db[db];
 			if (!dbv) return false;
-			if (dbv.isforall && (dbv.noacl || dbv.name === 'fl_0_remote') && !dbv.restricted) return 2;
-			else {
-				if (!dbv.isforall) {
-					// we have _design/acl.restrict.* general access rule
-					var acl = cvr.db[db].ddoc['_design/acl'].restrict["*"],
-						allow = false;
-					u._acl.forEach(function(e){if (acl[e]) allow=true;});
-					return allow?1:0;
-				}
-				else return 1;
-			}
-		},
+      //if(dbv.isforall && (dbv.noacl || dbv.name === 'fl_0_remote') && !dbv.restricted) {
+      if(dbv.isforall && dbv.noacl && !dbv.restricted) {
+        return 2;
+      }
+      else {
+        if(!dbv.isforall) {
+          // we have _design/acl.restrict.* general access rule
+          var acl = cvr.db[db].ddoc['_design/acl'].restrict['*'],
+            allow = false;
+          u._acl.forEach(function (e) {
+            if(acl[e]) allow = true;
+          });
+          return allow ? 1 : 0;
+        }
+        else {
+          return 1;
+        }
+      }
+    },
 		doc: function(session, db, id){
 			// Sync validator by doc._id,
 			// assume acl view is loaded

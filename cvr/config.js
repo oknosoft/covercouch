@@ -27,7 +27,7 @@ module.exports = function (runtime) {
       url: process.env.URL || "http://127.0.0.1:5984",                   // Couch URL
       nano: process.env.NANO || "http://login:pass@127.0.0.1:5984",      // Couch URL with admin login:pass
       users: "_users",            // Users bucket
-      maxIdLength: 200,           // Max _id length
+      maxIdLength: 250,           // Max _id length
       renewSessionInterval:300,   // Seconds between subsequent _session request
       preload: [                  // Buckets to preload and to insert acl ddoc if none
         "fl_0_remote",
