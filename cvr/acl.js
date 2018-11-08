@@ -65,14 +65,13 @@ module.exports = function (cvr) {
 	cvr.ACL = {
 		_pending:pending, // ACL update requests pending, keys are "dbname docid dbseq"
 
-		load: function(db, id, seq0){
+		load: function(db, id, seq = ''){
 			// return promise that is resolved with acl doc
 			// when ACL become up-to-date
 			var dbv = cvr.db[db],
 				dbc = dbv.nano,
-				seq = +seq0,
 				key = db+" "+id,
-				pi, i, iseq = 0, aclreq;
+				pi, i, iseq = '0', aclreq;
 
 			if (dbv.acl[id] && +dbv.acl[id].s >= seq) {
 				// ACL is up-to-date
@@ -81,7 +80,7 @@ module.exports = function (cvr) {
 				if (pending[key] && Object.size(pending[key])) {
 					// detach promises from repo
 					for (i in pending[key]) {
-						if (+i <= iseq) {
+						if (i <= iseq) {
 							pi = pending[key];
 							pi.resolve(dbv.acl[id]);
 							delete pending[key][i];
@@ -100,11 +99,11 @@ module.exports = function (cvr) {
 				if (pending[key]) {
 					// Check if we already have ACL request
 					// to CouchDB pending
-					aclreq = null; iseq = 0;
+					aclreq = null; iseq = '0';
 					for (i in pending[key]) {
-						if (+i>iseq) {
+						if (i>iseq) {
 							aclreq = pending[key][i];
-							iseq = +i;
+							iseq = i;
 						}
 					}
 					if (aclreq && iseq>=seq) {
@@ -129,7 +128,7 @@ module.exports = function (cvr) {
 					if (r) {
 						iseq = r.s;
 						for (i in pending[key]) {
-							if (+i <= iseq) {
+							if (i <= iseq) {
 								pending[key][i].resolve(r);
 								delete pending[key][i];
 							}

@@ -460,7 +460,7 @@ module.exports = function (runtime) {
                 }
                 else {
                     // Update ACL
-                    cvr.ACL.load(db, id, a.seq);
+                    !dbv.noacl && cvr.ACL.load(db, id, a.seq);
                     // Reload if ddoc
                     if (ddoc) {
                         _list({include_docs: true, startkey: id, endkey: id})

@@ -64,7 +64,7 @@ module.exports = function (cvr) {
         '/_all_docs':     'body,db,rows',
         '/_find':         'body,db,mango',
         '/_bulk_docs':    'body,db,bulk',
-        '/_changes':      'db,changes',
+        '/_changes':      'body,db,changes',
         '/_compact':      'admin',
         '/_compact/*':    'admin',
         '/_view_cleanup': 'admin',

@@ -9,7 +9,7 @@ module.exports = function (R, cvr, _newDb) {
         es = cvr.Estream,
         routes = require('./restmap')(cvr),
         conf = cvr.config,
-        trimPipe = conf.couch.maxIdLength * 1 + 100,
+        trimPipe = conf.couch.maxIdLength * 1 + 1024,
         couch = conf.couch.url,
         Q = cvr.Q,
         isA = Object.isArray,
@@ -74,8 +74,8 @@ module.exports = function (R, cvr, _newDb) {
 
                 var ok = cvr.ACL.db(req.session, db);
               if(ok == 2) {
-                //req.route.path === '/:db/_changes' ? next() : actors.pipe(req, res);
-                actors.pipe(req, res);
+                req.route.path === '/:db/_changes' ? next() : actors.pipe(req, res);
+                //actors.pipe(req, res);
               }
               else if(ok == 1) {
                 _restrict();
@@ -331,7 +331,10 @@ module.exports = function (R, cvr, _newDb) {
             headers: req.h
           };
           //If we have no body parsed, pipe request
-          if(!req.body || req.route.path === '/:db/_changes') {
+          // if(req.route.path === '/:db/_changes') {
+          //   cvr.request(_gen(req)).pipe(res);
+          // }
+          if(!req.body) {
             req.pipe(cvr.request(p)).pipe(res);
           }
           else {
@@ -383,7 +386,7 @@ module.exports = function (R, cvr, _newDb) {
 
             json = /^[nl]/.test(m);
 
-            req.pipe(cvr.request(p))
+            cvr.request(p)
                 .pipe(es.split())
                 .pipe(es.map(function (data, done) {
                     var id, ok = false, dseq;
@@ -407,27 +410,30 @@ module.exports = function (R, cvr, _newDb) {
                             id = (data.to(trimPipe).match(/^(data:)?\{[^\{]*"id":"(.+?)","/) || []).last();
 
                             if (id) {
-                                dseq = (data.to(50).match(/^(data:)?\{[^\{]*"seq":(\d+),"/) || []).last();
+                                dseq = (data.to(1024).match(/^(data:)?\{[^\{]*"seq":(.+?),"/) || []).last();
                                 if (dseq) {
-                                    dseq = +dseq;
+                                    //dseq = +dseq;
                                     if (cvr.db[db].acl[id] && cvr.db[db].acl[id].s >= dseq) {
 
                                         ok = !!cvr.ACL.doc(req.session, req.params.db, id)._r;
                                         _fin(dseq);
                                     }
                                     else {
-                                        // read ACL async
-                                        cvr.ACL.load(db, id, dseq)
-                                            .then(
-                                            function () {
-                                                ok = !!cvr.ACL.doc(req.session, req.params.db, id)._r;
-                                                _fin(dseq);
-                                            },
-                                            function () {
-                                                ok = false;
-                                                _fin();
-                                            }
-                                        );
+                                      // TODO: ACL в _changes пока не проверяем
+                                      ok = true;
+                                      _fin(dseq);
+                                        // // read ACL async
+                                        // cvr.ACL.load(db, id, dseq)
+                                        //     .then(
+                                        //     function () {
+                                        //         ok = !!cvr.ACL.doc(req.session, req.params.db, id)._r;
+                                        //         _fin(dseq);
+                                        //     },
+                                        //     function () {
+                                        //         ok = false;
+                                        //         _fin();
+                                        //     }
+                                        // );
                                     }
                                 } else _fin();
                             } else _fin();
