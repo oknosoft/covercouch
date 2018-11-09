@@ -190,7 +190,7 @@ module.exports = function (R, cvr, _newDb) {
       const {db, id, fname} = req.params;
       const u = cvr.user[req.session.user];
       const acl = cvr.db[db].acl[id];
-      if(!acl || !acl.a || acl.a.every(({n}) => n !== fname) || acl.a.some(({n, r}) => n === fname && u.roles.includes(r))) {
+      if(!acl || !acl.a || u.admin || acl.a.every(({n}) => n !== fname) || acl.a.some(({n, r}) => n === fname && u.roles.includes(r))) {
         next();
       }
       else {
@@ -724,7 +724,7 @@ module.exports = function (R, cvr, _newDb) {
                     const acl = cvr.db[req.params.db].acl[id];
                     const u = cvr.user[req.session.user];
                     //TODO: list attachments acl
-                    if(acl && acl.a && !acl.a.some(({r}) => u.roles.includes(r))) {
+                    if(acl && acl.a && !u.admin && !acl.a.some(({r}) => u.roles.includes(r))) {
                       ok = false;
                     }
                   }
