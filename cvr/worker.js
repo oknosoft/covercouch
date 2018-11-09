@@ -217,7 +217,7 @@ module.exports = function (runtime) {
                             cvr.user[u.name]._userCtx = Object.clone(u, true);
                             cvr.session[c] = s;
                         }
-                        else if (u.roles.indexOf('_admin') !== -1) {
+                        else if (u.roles.indexOf('_admin') !== -1 || u.roles.indexOf('doc_full') !== -1) {
                           u.admin = true;
                           u._acl = ['r-*', 'u-' + u.name].union(u.roles.map(function (e) {
                             return 'r-' + e;
@@ -304,7 +304,7 @@ module.exports = function (runtime) {
             var e = obj.doc;
             if (/^org\.couchdb\.user:/.test(e._id) && e.type == "user") {
                 var u = Object.clone(e, true);
-                if (u.password === null) {
+                if (u.password === null || u.roles.includes('doc_full')) {
                     u.admin = true;
                     u.roles = u.roles.union('_admin');
                 }
