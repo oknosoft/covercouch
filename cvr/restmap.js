@@ -39,7 +39,7 @@ module.exports = function (cvr) {
         '/_design/id':          'db,doc,pipe',
         '/_design/id/fname':    'db,doc,pipe',
         '/_local/id':           'db,pipe',
-        '/id/fname':            'db,doc,pipe',
+        '/id/fname':            'db,doc,attachment,pipe',
 
         '/_design/ddoc': {
           '/_info':       'admin',
