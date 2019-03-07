@@ -13,8 +13,8 @@ module.exports = function (runtime) {
 
       rater: {                    // Request rate locker
         all: {                    // Total requests limit
-          interval: 1,            // Seconds, collect interval
-          limit: 100              // Max requests per interval
+          interval: 2,            // Seconds, collect interval
+          limit: 300              // Max requests per interval
         },
         ip: {                     // Per-ip requests limit
           interval: 10,

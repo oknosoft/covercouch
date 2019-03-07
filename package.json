@@ -27,7 +27,7 @@
 		"basic-auth": "^2.0",
 		"body-parser": "^1.18",
 		"compression": "^1.7",
-		"cookie-parser": "^1.4",
+		"cookie-parser": "^1.4.4",
 		"event-stream": "^4.0.1",
 		"express": "^4.16.4",
 		"memory-rate": ">=0.0.7",
